@@ -159,7 +159,7 @@ namespace UnityFolderColorSettings.Editor
             OpenedFolderTexture = EditorGUIUtility.FindTexture("d_FolderOpened Icon");
             EmptyFolderTexture = EditorGUIUtility.FindTexture("d_FolderEmpty Icon");
 
-            EditorApplication.projectWindowItemInstanceOnGUI += DrawFolderIcon;
+            EditorApplication.projectWindowItemByEntityIdOnGUI += DrawFolderIcon;
             EditorApplication.update += UpdateProjectBrowser;
         }
 
@@ -168,7 +168,7 @@ namespace UnityFolderColorSettings.Editor
             ProjectWindowUtil.UpdateBrowserFields();
         }
 
-        public static void DrawFolderIcon(int instanceid, Rect rect)
+        public static void DrawFolderIcon(EntityId instanceid, Rect rect)
         {
             if (!FolderColorSettingProvider.UseCustomFolderColor) return;
 
@@ -272,12 +272,12 @@ namespace UnityFolderColorSettings.Editor
         /// <summary>
         /// Tree view state for one column
         /// </summary>
-        private static TreeViewState CurrentAssetTreeViewState;
+        private static TreeViewState<EntityId> CurrentAssetTreeViewState;
 
         /// <summary>
         /// Tree view state for two column
         /// </summary>
-        private static TreeViewState CurrentFolderTreeViewState;
+        private static TreeViewState<EntityId> CurrentFolderTreeViewState;
 
         // 0 for one column, 1 for two column
         private static int CurrentProjectBrowserMode;
@@ -310,7 +310,7 @@ namespace UnityFolderColorSettings.Editor
 
             if (state != null)
             {
-                var instanceID = AssetDatabase.LoadAssetAtPath<Object>(path).GetInstanceID();
+                var instanceID = AssetDatabase.LoadAssetAtPath<Object>(path).GetEntityId();
                 return state.expandedIDs.Contains(instanceID);
             }
 
@@ -335,8 +335,8 @@ namespace UnityFolderColorSettings.Editor
                     }
                 }
 
-                CurrentAssetTreeViewState = AssetTreeStateField.GetValue(ProjectBrowser) as TreeViewState;
-                CurrentFolderTreeViewState = FolderTreeStateField.GetValue(ProjectBrowser) as TreeViewState;
+                CurrentAssetTreeViewState = AssetTreeStateField.GetValue(ProjectBrowser) as TreeViewState<EntityId>;
+                CurrentFolderTreeViewState = FolderTreeStateField.GetValue(ProjectBrowser) as TreeViewState<EntityId>;
                 CurrentProjectBrowserMode = (int)ProjectBroswerMode.GetValue(ProjectBrowser);
             }
             catch
